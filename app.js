@@ -14,12 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadPublicBtn = document.getElementById('downloadPublicBtn');
     const statusDiv = document.getElementById('status');
 
+    // Signature elements
+    const messageInput = document.getElementById('messageInput');
+    const signBtn = document.getElementById('signBtn');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const signatureOutput = document.getElementById('signatureOutput');
+    const verificationResult = document.getElementById('verificationResult');
+
     // Toggle between RSA and ECDSA key options
     keyTypeSelect.addEventListener('change', () => {
         const isRSA = keyTypeSelect.value === 'RSA';
         rsaKeySizeDiv.style.display = isRSA ? 'block' : 'none';
         ecdsaCurveDiv.style.display = isRSA ? 'none' : 'block';
     });
+
+    // Current key pair objects for signature operations
+    let currentPrivateKey = null;
+    let currentPublicKey = null;
 
     // Generate key pair
     generateBtn.addEventListener('click', async () => {
@@ -42,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
             privateKeyTextarea.value = keyPair.privateKey;
             publicKeyTextarea.value = keyPair.publicKey;
             
+            // Store the CryptoKey objects for signing/verification
+            currentPrivateKey = keyPair.privateKeyObject;
+            currentPublicKey = keyPair.publicKeyObject;
+            
+            // Clear previous signature data
+            clearSignatureData();
+            
             setStatus('Key pair generated successfully!', 'success');
         } catch (error) {
             console.error('Error generating key pair:', error);
@@ -57,6 +76,100 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadPrivateBtn.addEventListener('click', () => downloadKey(privateKeyTextarea.value, `private_key_${getTimestamp()}.pem`));
     downloadPublicBtn.addEventListener('click', () => downloadKey(publicKeyTextarea.value, `public_key_${getTimestamp()}.pem`));
 
+    // Signature functionality
+    signBtn.addEventListener('click', async () => {
+        try {
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                setVerificationResult('Please enter a message to sign', 'error');
+                return;
+            }
+            
+            if (!currentPrivateKey) {
+                setVerificationResult('Please generate a key pair first', 'error');
+                return;
+            }
+            
+            // Convert message to ArrayBuffer
+            const encoder = new TextEncoder();
+            const data = encoder.encode(message);
+            
+            // Sign the message
+            const algorithm = currentPrivateKey.algorithm.name === 'RSASSA-PKCS1-v1_5' 
+                ? 'RSASSA-PKCS1-v1_5' 
+                : { 
+                    name: 'ECDSA', 
+                    hash: { name: 'SHA-256' } 
+                };
+                
+            const signature = await window.crypto.subtle.sign(
+                algorithm,
+                currentPrivateKey,
+                data
+            );
+            
+            // Convert signature to Base64 for display
+            const signatureBase64 = arrayBufferToBase64(signature);
+            signatureOutput.value = signatureBase64;
+            
+            setVerificationResult('Message signed successfully', 'success');
+        } catch (error) {
+            console.error('Signing error:', error);
+            setVerificationResult(`Signing failed: ${error.message}`, 'error');
+        }
+    });
+    
+    verifyBtn.addEventListener('click', async () => {
+        try {
+            const message = messageInput.value.trim();
+            const signatureBase64 = signatureOutput.value.trim();
+            
+            if (!message || !signatureBase64) {
+                setVerificationResult('Both message and signature are required', 'error');
+                return;
+            }
+            
+            if (!currentPublicKey) {
+                setVerificationResult('Please generate a key pair first', 'error');
+                return;
+            }
+            
+            // Convert message to ArrayBuffer
+            const encoder = new TextEncoder();
+            const data = encoder.encode(message);
+            
+            // Convert Base64 signature to ArrayBuffer
+            const signatureArrayBuffer = base64ToArrayBuffer(signatureBase64);
+            
+            // Verify the signature
+            const algorithm = currentPublicKey.algorithm.name === 'RSASSA-PKCS1-v1_5' 
+                ? 'RSASSA-PKCS1-v1_5' 
+                : { 
+                    name: 'ECDSA', 
+                    hash: { name: 'SHA-256' } 
+                };
+                
+            const isValid = await window.crypto.subtle.verify(
+                algorithm,
+                currentPublicKey,
+                signatureArrayBuffer,
+                data
+            );
+            
+            if (isValid) {
+                setVerificationResult('Signature verified successfully! ', 'success');
+            } else {
+                setVerificationResult('Signature verification failed! ', 'error');
+            }
+        } catch (error) {
+            console.error('Verification error:', error);
+            setVerificationResult(`Verification error: ${error.message}`, 'error');
+        }
+    });
+    
+    clearBtn.addEventListener('click', clearSignatureData);
+    
     // Helper functions
     async function generateRSAKeyPair(modulusLength) {
         // Generate RSA key pair using Web Crypto API
@@ -83,7 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             privateKey: privateKeyPEM,
-            publicKey: publicKeyPEM
+            publicKey: publicKeyPEM,
+            privateKeyObject: keyPair.privateKey,
+            publicKeyObject: keyPair.publicKey
         };
     }
 
@@ -110,7 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             privateKey: privateKeyPEM,
-            publicKey: publicKeyPEM
+            publicKey: publicKeyPEM,
+            privateKeyObject: keyPair.privateKey,
+            publicKeyObject: keyPair.publicKey
         };
     }
 
@@ -187,5 +304,28 @@ document.addEventListener('DOMContentLoaded', () => {
             statusDiv.classList.add(type);
         }
     }
-});
 
+    function base64ToArrayBuffer(base64) {
+        const binary = window.atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    function clearSignatureData() {
+        messageInput.value = '';
+        signatureOutput.value = '';
+        verificationResult.textContent = '';
+        verificationResult.className = 'verification-result';
+    }
+    
+    function setVerificationResult(message, type) {
+        verificationResult.textContent = message;
+        verificationResult.className = 'verification-result';
+        if (type) {
+            verificationResult.classList.add(type);
+        }
+    }
+});

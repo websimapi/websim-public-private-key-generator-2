@@ -61,6 +61,28 @@
         </div>
         
         <div id="status" class="status-message"></div>
+        
+        <div class="signature-section">
+            <h2>Signature Verification</h2>
+            <p>Test your key pair by signing a message with your private key and verifying it with your public key.</p>
+            
+            <div class="form-group">
+                <label for="messageInput">Message to sign:</label>
+                <textarea id="messageInput" placeholder="Enter a message to sign..."></textarea>
+            </div>
+            
+            <div class="signature-actions">
+                <button id="signBtn" class="action-btn">Sign Message</button>
+                <button id="verifyBtn" class="action-btn">Verify Signature</button>
+                <button id="clearBtn" class="action-btn clear-btn">Clear</button>
+            </div>
+            
+            <div class="signature-result">
+                <h3>Signature:</h3>
+                <textarea id="signatureOutput" readonly></textarea>
+                <div id="verificationResult" class="verification-result"></div>
+            </div>
+        </div>
     </div>
     
     <footer>
@@ -72,4 +94,3 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-

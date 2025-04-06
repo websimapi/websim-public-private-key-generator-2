@@ -177,6 +177,88 @@ textarea {
     color: #0c5460;
 }
 
+.signature-section {
+    margin-top: 30px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.signature-section h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.signature-section p {
+    color: #7f8c8d;
+    margin-bottom: 15px;
+}
+
+.signature-actions {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.action-btn {
+    padding: 8px 15px;
+    flex: 1;
+    max-width: 160px;
+}
+
+#signBtn {
+    background-color: #3498db;
+}
+
+#signBtn:hover {
+    background-color: #2980b9;
+}
+
+#verifyBtn {
+    background-color: #f39c12;
+}
+
+#verifyBtn:hover {
+    background-color: #e67e22;
+}
+
+.clear-btn {
+    background-color: #95a5a6;
+}
+
+.clear-btn:hover {
+    background-color: #7f8c8d;
+}
+
+.signature-result h3 {
+    margin-bottom: 10px;
+    color: #34495e;
+    font-size: 1rem;
+}
+
+#signatureOutput {
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.verification-result {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.verification-result.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.verification-result.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
 footer {
     text-align: center;
     margin-top: auto;
@@ -189,4 +271,3 @@ footer {
 footer p {
     margin-bottom: 5px;
 }
-
