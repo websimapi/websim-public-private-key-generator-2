@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public/Private Key Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Public/Private Key Generator</h1>
+        
+        <div class="key-options">
+            <div class="form-group">
+                <label for="keyType">Key Type:</label>
+                <select id="keyType">
+                    <option value="RSA">RSA</option>
+                    <option value="ECDSA">ECDSA</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="rsaKeySize">
+                <label for="keySize">Key Size:</label>
+                <select id="keySize">
+                    <option value="2048">2048 bits</option>
+                    <option value="3072">3072 bits</option>
+                    <option value="4096">4096 bits</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="ecdsaCurve" style="display: none;">
+                <label for="curve">Curve:</label>
+                <select id="curve">
+                    <option value="P-256">P-256</option>
+                    <option value="P-384">P-384</option>
+                    <option value="P-521">P-521</option>
+                </select>
+            </div>
+            
+            <button id="generateBtn">Generate Key Pair</button>
+        </div>
+        
+        <div class="keys-container">
+            <div class="key-display">
+                <h2>Private Key</h2>
+                <div class="key-actions">
+                    <button id="copyPrivateBtn" class="copy-btn">Copy</button>
+                    <button id="downloadPrivateBtn" class="download-btn">Download</button>
+                </div>
+                <textarea id="privateKey" readonly></textarea>
+            </div>
+            
+            <div class="key-display">
+                <h2>Public Key</h2>
+                <div class="key-actions">
+                    <button id="copyPublicBtn" class="copy-btn">Copy</button>
+                    <button id="downloadPublicBtn" class="download-btn">Download</button>
+                </div>
+                <textarea id="publicKey" readonly></textarea>
+            </div>
+        </div>
+        
+        <div id="status" class="status-message"></div>
+    </div>
+    
+    <footer>
+        <p>Note: Keys are generated locally in your browser. No data is sent to any server.</p>
+        <p>Refresh the page to clear all key data from memory.</p>
+    </footer>
+    
+    <script src="app.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
